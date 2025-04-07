@@ -1,0 +1,65 @@
+[versions]
+agp = "8.9.0"
+grpcProtobuf = "1.71.0"
+grpcStub = "1.71.0"
+grpcProtobufLite = "1.71.0"
+grpcOkhttp = "1.71.0"
+inkBrush = "1.0.0-alpha03"
+inkAuthoring = "1.0.0-alpha03"
+inkGeometry = "1.0.0-alpha03"
+kotlin = "2.1.20"
+coreKtx = "1.15.0"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+kotlinStdlibJdk8 = "2.1.20"
+kotlinxCoroutinesCore = "1.10.1"
+lifecycleRuntimeKtx = "2.8.7"
+activityCompose = "1.10.1"
+composeBom = "2025.03.01"
+protobufGradlePlugin = "0.9.4"
+protobufJava = "4.30.2"
+grpc-kotlin-stub = "1.4.1"
+grpc = "1.71.0"
+protobuf = "4.30.2"
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-ink-geometry = { module = "androidx.ink:ink-geometry", version.ref = "inkGeometry" }
+androidx-ink-authoring = { module = "androidx.ink:ink-authoring", version.ref = "inkAuthoring" }
+androidx-ink-brush = { module = "androidx.ink:ink-brush", version.ref = "inkBrush" }
+androidx-ink-strokes = { module = "androidx.ink:ink-strokes", version.ref = "inkBrush" }
+androidx-ink-rendering = { module = "androidx.ink:ink-rendering", version.ref = "inkBrush" }
+androidx-ink-nativeloader = { module = "androidx.ink:ink-nativeloader", version.ref = "inkBrush" }
+google-protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobufJava" }
+grpc-okhttp = { module = "io.grpc:grpc-okhttp", version.ref = "grpcOkhttp" }
+grpc-protobuf = { module = "io.grpc:grpc-protobuf", version.ref = "grpcProtobuf" }
+grpc-kotlin-stub = { group = "io.grpc", name = "grpc-kotlin-stub", version.ref = "grpc-kotlin-stub" }
+grpc-netty = { group = "io.grpc", name = "grpc-netty", version.ref = "grpc" }
+grpc-protobuf-lite = { module = "io.grpc:grpc-protobuf-lite", version.ref = "grpcProtobufLite" }
+grpc-stub = { module = "io.grpc:grpc-stub", version.ref = "grpcStub" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+kotlinx-rpc-grpc-core = { module = "org.jetbrains.kotlinx:kotlinx-rpc-grpc-core" }
+protobuf-java-util = { group = "com.google.protobuf", name = "protobuf-java-util", version.ref = "protobuf" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlinStdlibJdk8" }
+protobuf-gradle-plugin = { module = "com.google.protobuf:protobuf-gradle-plugin", version.ref = "protobufGradlePlugin" }
+protobuf-kotlin = { module = "com.google.protobuf:protobuf-kotlin", version.ref = "protobufJava" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+

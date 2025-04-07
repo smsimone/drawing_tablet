@@ -1,0 +1,7 @@
+android_app/.idea
+android_app/.kotlin/errors
+android_app/protobuf/bin/main/it/smaso/drawingtablet
+android_app/protobuf/build
+desktop_client/.cache/clangd/index
+desktop_client/.vscode
+desktop_client/build
