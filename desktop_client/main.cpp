@@ -1,7 +1,7 @@
+#include "logger.h"
 #include "service/main_service.hpp"
 #include <CoreGraphics/CoreGraphics.h>
 #include <grpc++/grpc++.h>
-#include <iostream>
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -15,7 +15,7 @@ int main() {
   builder.RegisterService(&service);
   std::unique_ptr<Server> server{builder.BuildAndStart()};
 
-  std::cout << "Server listening on " << server_address << std::endl;
+  Logger::info(std::format("Server listening on: {}", server_address));
   server->Wait();
 
   return 0;

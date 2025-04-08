@@ -16,11 +16,15 @@ using it::smaso::drawingtablet::MainService;
 using it::smaso::drawingtablet::ScreenSize;
 
 class MainServiceImpl final : public MainService::Service {
+public:
   Status GetScreenSize(ServerContext *context, const Empty *request,
                        ScreenSize *response) override;
 
   Status OnCursorPosition(ServerContext *context, const CursorPosition *request,
                           Empty *response) override;
+
+private:
+  volatile bool is_clicking = false;
 };
 
 #endif // MAIN_SERVICE_H

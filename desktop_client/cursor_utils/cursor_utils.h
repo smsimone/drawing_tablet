@@ -18,7 +18,9 @@ inline std::ostream &operator<<(std::ostream &stream,
   return stream;
 }
 
-void move(const position &pos, const bool &click_down);
+void move(const position &pos);
+void click_down();
+void click_up();
 
 position get_current_position();
 } // namespace cursor

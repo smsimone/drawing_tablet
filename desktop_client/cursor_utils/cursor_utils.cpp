@@ -19,14 +19,36 @@ position get_current_position() {
 #endif
 }
 
-void move(const position &pos, const bool &click_down) {
+void move(const position &pos) {
 #ifdef __APPLE__
-  CGEventType mouseEvent =
-      click_down ? kCGEventOtherMouseDragged : kCGEventMouseMoved;
   CGEventRef event = CGEventCreateMouseEvent(
-      NULL, mouseEvent, CGPointMake(pos.x, pos.y), kCGMouseButtonLeft);
+      NULL, kCGEventMouseMoved, CGPointMake(pos.x, pos.y), kCGMouseButtonLeft);
   CGPoint point = CGPointMake(pos.x, pos.y);
   CGEventSetLocation(event, point);
+  CGEventPost(kCGHIDEventTap, event);
+  CFRelease(event);
+#else
+  throw runtime_error("Not implemented");
+#endif
+}
+
+void click_down() {
+#ifdef __APPLE__
+  position p = get_current_position();
+  CGEventRef event = CGEventCreateMouseEvent(
+      NULL, kCGEventLeftMouseDown, CGPointMake(p.x, p.y), kCGMouseButtonLeft);
+  CGEventPost(kCGHIDEventTap, event);
+  CFRelease(event);
+#else
+  throw runtime_error("Not implemented");
+#endif
+}
+
+void click_up() {
+#ifdef __APPLE__
+  position p = get_current_position();
+  CGEventRef event = CGEventCreateMouseEvent(
+      NULL, kCGEventLeftMouseUp, CGPointMake(p.x, p.y), kCGMouseButtonLeft);
   CGEventPost(kCGHIDEventTap, event);
   CFRelease(event);
 #else
