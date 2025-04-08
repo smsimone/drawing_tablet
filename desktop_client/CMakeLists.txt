@@ -12,11 +12,6 @@ list(REMOVE_ITEM SOURCES "${CMAKE_BINARY_DIR}/CMakeFiles/4.0.0/CompilerIdCXX/CMa
 find_package(Protobuf CONFIG REQUIRED)
 find_package(gRPC REQUIRED)
 
-if(${gRPC_FOUND})
-   message(STATUS "Grpc plugin found") 
-endif(${gRPC_FOUND})
-
-
 include_directories(${Protobuf_INCLUDE_DIRS})
 include_directories(${gRPC_INCLUDE_DIRS})
 

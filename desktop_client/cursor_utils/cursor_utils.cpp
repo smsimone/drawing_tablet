@@ -22,14 +22,11 @@ position get_current_position() {
 void move(const position &pos, const bool &click_down) {
 #ifdef __APPLE__
   CGEventType mouseEvent =
-      click_down ? kCGEventLeftMouseDragged : kCGEventMouseMoved;
+      click_down ? kCGEventOtherMouseDragged : kCGEventMouseMoved;
   CGEventRef event = CGEventCreateMouseEvent(
       NULL, mouseEvent, CGPointMake(pos.x, pos.y), kCGMouseButtonLeft);
   CGPoint point = CGPointMake(pos.x, pos.y);
   CGEventSetLocation(event, point);
-  if (click_down) {
-    CGEventSetIntegerValueField(event, kCGMouseEventClickState, 1);
-  }
   CGEventPost(kCGHIDEventTap, event);
   CFRelease(event);
 #else
