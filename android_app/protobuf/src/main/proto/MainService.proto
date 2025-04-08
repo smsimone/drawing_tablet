@@ -8,14 +8,10 @@ message ScreenSize {
   int32 height = 2;
 }
 
-message Coordinates {
-  float x = 1;
-  float y = 2;
-}
-
-message CursorPosition{
+message CursorPosition {
   bool clicking = 1;
-  Coordinates coordinates = 2;
+  float x = 2;
+  float y = 3;
 }
 
 service MainService {

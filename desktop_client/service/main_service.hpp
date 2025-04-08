@@ -10,7 +10,6 @@ using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
 using grpc::Status;
-using it::smaso::drawingtablet::Coordinates;
 using it::smaso::drawingtablet::CursorPosition;
 using it::smaso::drawingtablet::MainService;
 using it::smaso::drawingtablet::ScreenSize;

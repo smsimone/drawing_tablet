@@ -2,7 +2,13 @@
 #include "main_service.hpp"
 #include "../cursor_utils/cursor_utils.h"
 #include "../logger.h"
+#include <chrono>
 #include <format>
+#include <thread>
+
+void wait_for(int millis) {
+  std::this_thread::sleep_for(std::chrono::milliseconds(millis));
+}
 
 Status MainServiceImpl::GetScreenSize(ServerContext *context,
                                       const Empty *request,
@@ -17,19 +23,21 @@ Status MainServiceImpl::GetScreenSize(ServerContext *context,
 Status MainServiceImpl::OnCursorPosition(ServerContext *context,
                                          const CursorPosition *request,
                                          Empty *response) {
-  Coordinates coords = request->coordinates();
-  Logger::info(std::format("Moved to ({}, {}) with click: {}", coords.x(),
-                           coords.y(), request->clicking()));
 
-  cursor::move(cursor::position{.x = coords.x(), .y = coords.y()});
-
-  /// if started clicking now -> click_down
   if (!is_clicking && request->clicking()) {
     cursor::click_down();
+    Logger::info("Sending mouse down");
   } else if (is_clicking && !request->clicking()) {
     cursor::click_up();
+    Logger::info("Sending mouse up");
   }
   is_clicking = request->clicking();
+
+  cursor::position coords = cursor::position{request->x(), request->y()};
+  Logger::info(std::format("Moved to ({}, {}) with click: {}", coords.x,
+                           coords.y, request->clicking()));
+
+  cursor::move(coords);
 
   return Status::OK;
 }

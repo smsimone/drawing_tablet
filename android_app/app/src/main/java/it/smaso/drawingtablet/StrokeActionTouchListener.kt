@@ -1,5 +1,6 @@
 package it.smaso.drawingtablet
 
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.compose.runtime.getValue
@@ -17,38 +18,57 @@ const val TAG = "STROKE_LISTENER"
 class StrokeActionTouchListener(
     private val brush: Brush,
     private val inProgressStrokesView: InProgressStrokesView,
-) : View.OnTouchListener {
+) : View.OnTouchListener, View.OnHoverListener {
     var currentPointerId by mutableStateOf<Int?>(null)
     var currentStrokeId by mutableStateOf<InProgressStrokeId?>(null)
     val connection = SocketConnection.getInstance()
 
+    // Updates the cursor status without the click
+    override fun onHover(view: View, event: MotionEvent): Boolean {
+        runBlocking {
+            launch {
+                val coords: MainServiceOuterClass.CursorPosition
+                if (currentPointerId != null) {
+                    coords = MainServiceOuterClass.CursorPosition.newBuilder()
+                        .setX(event.getX(currentPointerId!!))
+                        .setY(event.getY(currentPointerId!!))
+                        .setClicking(false)
+                        .build()
+                } else {
+                    coords = MainServiceOuterClass.CursorPosition.newBuilder()
+                        .setX(event.rawX)
+                        .setY(event.rawY)
+                        .setClicking(false)
+                        .build()
+                }
+                connection.onCursorPositionUpdate(coords)
+            }
+        }
+        return true
+    }
 
     @Suppress("ClickableViewAccessibility")
     override fun onTouch(view: View, event: MotionEvent): Boolean {
         val isUsingPen = recognizePen(event)
 
-
         runBlocking {
             launch {
-                val coords: MainServiceOuterClass.Coordinates
+                val coords: MainServiceOuterClass.CursorPosition
                 if (currentPointerId != null) {
-                    coords = MainServiceOuterClass.Coordinates.newBuilder()
+                    coords = MainServiceOuterClass.CursorPosition.newBuilder()
                         .setX(event.getX(currentPointerId!!))
                         .setY(event.getY(currentPointerId!!))
+                        .setClicking(isUsingPen)
                         .build()
                 } else {
-                    coords = MainServiceOuterClass.Coordinates.newBuilder()
+                    coords = MainServiceOuterClass.CursorPosition.newBuilder()
                         .setX(event.rawX)
                         .setY(event.rawY)
+                        .setClicking(isUsingPen)
                         .build()
                 }
 
-                connection.onCursorPositionUpdate(
-                    MainServiceOuterClass.CursorPosition.newBuilder()
-                        .setClicking(isUsingPen)
-                        .setCoordinates(coords)
-                        .build()
-                )
+                connection.onCursorPositionUpdate(coords)
             }
         }
 
@@ -81,8 +101,14 @@ class StrokeActionTouchListener(
         }.also { doPostHandlerAction(view, event) }
     }
 
-    private fun recognizePen(event: MotionEvent): Boolean =
-        event.device.name.lowercase().contains("pen")
+    private fun recognizePen(event: MotionEvent): Boolean {
+        return try {
+            event.device.name.lowercase().contains("pen")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to check if using pen: $e")
+            false
+        }
+    }
 
     private fun doPostHandlerAction(view: View, event: MotionEvent) {
         if (event.actionMasked == MotionEvent.ACTION_UP) {
