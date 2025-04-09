@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.30)
 project(drawing_tablet)
+include(ExternalProject)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_COMPILER "clang++")
@@ -8,7 +9,9 @@ set(protobuf_MODULE_COMPATIBLE TRUE)
 file(GLOB_RECURSE SOURCES "*.cpp")
 list(REMOVE_ITEM SOURCES "${CMAKE_BINARY_DIR}/CMakeFiles/4.0.0/CompilerIdCXX/CMakeCXXCompilerId.cpp")
 
-#### GRPC e PROTOBUF
+option(ENABLE_UPNP "Enabled UPnP protocol" OFF)
+
+#### GRPC and PROTOBUF
 find_package(Protobuf CONFIG REQUIRED)
 find_package(gRPC REQUIRED)
 
@@ -22,8 +25,6 @@ set(GENERATED_SRCS
     ${CMAKE_CURRENT_BINARY_DIR}/proto/MainService.grpc.pb.cc)
 
 set(gRPC_CPP_PLUGIN_EXECUTABLE "/opt/homebrew/bin/grpc_cpp_plugin")
-message(STATUS "Using ${Protobuf_PROTOC_EXECUTABLE} protoc exec")
-message(STATUS "Using ${gRPC_CPP_PLUGIN_EXECUTABLE} grpc plugin")
 
 add_custom_command(
     OUTPUT ${GENERATED_SRCS}
@@ -35,15 +36,39 @@ add_custom_command(
          ${PROTO_FILES}
     DEPENDS ${PROTO_FILES}
     COMMENT "Running gRPC C++ protocol buffer compiler on ${PROTO_FILES}"
-    VERBATIM)
+    VERBATIM
+)
+
+### UPnP dependency
+if(ENABLE_UPNP)
+	message(STATUS "Fetching upnp library")
+	ExternalProject_Add(
+		miniupnpc
+		PREFIX ${CMAKE_BINARY_DIR}/external/miniupnpc
+		GIT_REPOSITORY https://github.com/miniupnp/miniupnp.git
+		GIT_TAG master
+		CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/miniupnpc-install
+		BUILD_COMMAND make -j 12
+		INSTALL COMMAND make install
+	)
+	add_library(miniupnpc STATIC IMPORTED)
+endif()
 
 add_executable(drawing_tablet ${SOURCES} ${GENERATED_SRCS})
-target_link_libraries(drawing_tablet
+set(LIBRARIES LIST 
     "-framework CoreGraphics"
     "-framework CoreFoundation"
     ${Protobuf_LIBRARIES}
     gRPC::grpc++
     gRPC::grpc++_reflection
-    gRPC::grpc)
+    gRPC::grpc
+)
 
 target_include_directories(drawing_tablet PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+if(ENABLE_UPNP)
+	#list(APPEND LIBRARIES miniupnpc)
+	message(STATUS "Included UPnP library")
+endif()
+
+
+target_link_libraries(drawing_tablet PRIVATE ${LIBRARIES})

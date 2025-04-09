@@ -1,6 +1,5 @@
 #include "logger.h"
 #include "service/main_service.hpp"
-#include <CoreGraphics/CoreGraphics.h>
 #include <grpc++/grpc++.h>
 
 using grpc::Server;

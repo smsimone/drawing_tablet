@@ -6,10 +6,6 @@
 #include <format>
 #include <thread>
 
-void wait_for(int millis) {
-  std::this_thread::sleep_for(std::chrono::milliseconds(millis));
-}
-
 Status MainServiceImpl::GetScreenSize(ServerContext *context,
                                       const Empty *request,
                                       ScreenSize *response) {

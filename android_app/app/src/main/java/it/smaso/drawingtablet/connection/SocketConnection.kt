@@ -47,7 +47,7 @@ class SocketConnection private constructor() {
     }
 
     fun getScreenSize(): ScreenSize? {
-        assert(stub != null)
+        if (stub == null) return null
 
         var screenSize: MainServiceOuterClass.ScreenSize? = null
         runBlocking {
@@ -63,7 +63,8 @@ class SocketConnection private constructor() {
     }
 
     suspend fun onCursorPositionUpdate(update: MainServiceOuterClass.CursorPosition) {
-        assert(stub != null)
+        if (stub == null) return
+
         try {
             stub!!.onCursorPosition(update)
             Log.d(TAG, "Sent new update to the cursor channel")

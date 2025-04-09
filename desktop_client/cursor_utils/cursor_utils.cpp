@@ -1,10 +1,16 @@
 #include "cursor_utils.h"
+#ifdef __APPLE__
 #include <CoreFoundation/CFBase.h>
 #include <CoreFoundation/CFCGTypes.h>
 #include <CoreGraphics/CGEvent.h>
 #include <CoreGraphics/CGEventTypes.h>
 #include <CoreGraphics/CGGeometry.h>
 #include <cstddef>
+#endif
+
+#ifndef __APPLE__
+#include <stdexcept>
+#endif // !__APPLE__
 
 namespace cursor {
 position get_current_position() {
@@ -28,7 +34,7 @@ void move(const position &pos) {
   CGEventPost(kCGHIDEventTap, event);
   CFRelease(event);
 #else
-  throw runtime_error("Not implemented");
+  throw std::runtime_error("Not implemented");
 #endif
 }
 
@@ -40,7 +46,7 @@ void click_down() {
   CGEventPost(kCGHIDEventTap, event);
   CFRelease(event);
 #else
-  throw runtime_error("Not implemented");
+  throw std::runtime_error("Not implemented");
 #endif
 }
 
@@ -52,7 +58,7 @@ void click_up() {
   CGEventPost(kCGHIDEventTap, event);
   CFRelease(event);
 #else
-  throw runtime_error("Not implemented");
+  throw std::runtime_error("Not implemented");
 #endif
 }
 
@@ -65,11 +71,10 @@ dimensions get_screen_dimensions() {
   CGDirectDisplayID displayId = CGMainDisplayID();
   size_t width = CGDisplayPixelsWide(displayId);
   size_t height = CGDisplayPixelsHigh(displayId);
-
   return dimensions{.height = static_cast<int>(height),
                     .width = static_cast<int>(width)};
 #else
-  throw runtime_error("Not implemented");
+  throw std::runtime_error("Not implemented");
 #endif
 }
 } // namespace screen

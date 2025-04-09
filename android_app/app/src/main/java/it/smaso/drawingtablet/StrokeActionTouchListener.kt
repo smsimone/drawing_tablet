@@ -10,8 +10,10 @@ import androidx.ink.authoring.InProgressStrokeId
 import androidx.ink.authoring.InProgressStrokesView
 import androidx.ink.brush.Brush
 import it.smaso.drawingtablet.connection.SocketConnection
+import it.smaso.drawingtablet.connection.model.ScreenSize
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 const val TAG = "STROKE_LISTENER"
 
@@ -23,55 +25,55 @@ class StrokeActionTouchListener(
     var currentStrokeId by mutableStateOf<InProgressStrokeId?>(null)
     val connection = SocketConnection.getInstance()
 
+    private val scope = CoroutineScope(Dispatchers.Main)
+    private var targetScreenSize: ScreenSize? = null
+
+    fun setScreenSize(size: ScreenSize) {
+        this.targetScreenSize = size
+    }
+
+    private fun currentScreenSize() = ScreenSize(
+        inProgressStrokesView.height, inProgressStrokesView.width
+    )
+
+    private fun sendUpdate(event: MotionEvent, clicking: Boolean) {
+        if (targetScreenSize == null) return
+
+        scope.launch(Dispatchers.Main.immediate) {
+            var currentX =
+                if (currentPointerId == null) event.rawX else event.getX(currentPointerId!!)
+
+            var currentY =
+                if (currentPointerId == null) event.rawY else event.getY(currentPointerId!!)
+
+            Log.i(TAG, "Mapping from ($currentX, $currentY)")
+            val currentSize = currentScreenSize()
+
+
+            currentX = (targetScreenSize!!.width.toFloat() / currentSize.width.toFloat()) * currentX
+            currentY =
+                (targetScreenSize!!.height.toFloat() / currentSize.height.toFloat()) * currentY
+            Log.i(TAG, "Mapped to ($currentX, $currentY)")
+
+            val coordinates = MainServiceOuterClass.CursorPosition.newBuilder()
+                .setX(currentX)
+                .setY(currentY)
+                .setClicking(clicking)
+                .build()
+            connection.onCursorPositionUpdate(coordinates)
+        }
+    }
+
     // Updates the cursor status without the click
     override fun onHover(view: View, event: MotionEvent): Boolean {
-        runBlocking {
-            launch {
-                val coords: MainServiceOuterClass.CursorPosition
-                if (currentPointerId != null) {
-                    coords = MainServiceOuterClass.CursorPosition.newBuilder()
-                        .setX(event.getX(currentPointerId!!))
-                        .setY(event.getY(currentPointerId!!))
-                        .setClicking(false)
-                        .build()
-                } else {
-                    coords = MainServiceOuterClass.CursorPosition.newBuilder()
-                        .setX(event.rawX)
-                        .setY(event.rawY)
-                        .setClicking(false)
-                        .build()
-                }
-                connection.onCursorPositionUpdate(coords)
-            }
-        }
+        sendUpdate(event, false)
         return true
     }
 
     @Suppress("ClickableViewAccessibility")
     override fun onTouch(view: View, event: MotionEvent): Boolean {
         val isUsingPen = recognizePen(event)
-
-        runBlocking {
-            launch {
-                val coords: MainServiceOuterClass.CursorPosition
-                if (currentPointerId != null) {
-                    coords = MainServiceOuterClass.CursorPosition.newBuilder()
-                        .setX(event.getX(currentPointerId!!))
-                        .setY(event.getY(currentPointerId!!))
-                        .setClicking(isUsingPen)
-                        .build()
-                } else {
-                    coords = MainServiceOuterClass.CursorPosition.newBuilder()
-                        .setX(event.rawX)
-                        .setY(event.rawY)
-                        .setClicking(isUsingPen)
-                        .build()
-                }
-
-                connection.onCursorPositionUpdate(coords)
-            }
-        }
-
+        sendUpdate(event, isUsingPen)
         if (!isUsingPen) return true
 
         return when (mapEventToAction(event)) {

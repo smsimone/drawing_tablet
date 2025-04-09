@@ -17,6 +17,7 @@ kotlinxCoroutinesCore = "1.10.1"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.1"
 composeBom = "2025.03.01"
+material = "1.8.0-rc02"
 protobufGradlePlugin = "0.9.4"
 protobufJava = "4.30.2"
 grpc-kotlin-stub = "1.4.1"
@@ -31,6 +32,7 @@ androidx-ink-brush = { module = "androidx.ink:ink-brush", version.ref = "inkBrus
 androidx-ink-strokes = { module = "androidx.ink:ink-strokes", version.ref = "inkBrush" }
 androidx-ink-rendering = { module = "androidx.ink:ink-rendering", version.ref = "inkBrush" }
 androidx-ink-nativeloader = { module = "androidx.ink:ink-nativeloader", version.ref = "inkBrush" }
+androidx-material = { module = "androidx.compose.material:material", version.ref = "material" }
 google-protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobufJava" }
 grpc-okhttp = { module = "io.grpc:grpc-okhttp", version.ref = "grpcOkhttp" }
 grpc-protobuf = { module = "io.grpc:grpc-protobuf", version.ref = "grpcProtobuf" }
