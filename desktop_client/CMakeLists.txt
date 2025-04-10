@@ -55,9 +55,10 @@ if(ENABLE_UPNP)
 endif()
 
 add_executable(drawing_tablet ${SOURCES} ${GENERATED_SRCS})
-set(LIBRARIES LIST 
+set(LIBRARIES
     "-framework CoreGraphics"
     "-framework CoreFoundation"
+    "-framework IOKit"
     ${Protobuf_LIBRARIES}
     gRPC::grpc++
     gRPC::grpc++_reflection
