@@ -1,16 +1,13 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#include <grpc++/grpc++.h>
-#include <memory>
 #include "../logger.h"
+#include <grpc++/grpc++.h>
+#include <iostream>
 
-class DTServer
-{
-};
+class DTServer {};
 
-class RemoteServer final : DTServer
-{
+class RemoteServer final : DTServer {
 private:
   std::unique_ptr<grpc::Server> server;
   volatile bool initialized = false;
@@ -23,8 +20,7 @@ public:
   void wait();
 };
 
-class SerialServer final : DTServer
-{
+class SerialServer final : DTServer {
 
 public:
   void list_devices();

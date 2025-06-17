@@ -1,9 +1,7 @@
-#include "logger.h"
-#include "service/main_service.hpp"
-#include <grpc++/grpc++.h>
 #include "server/server.hpp"
+#include <grpc++/grpc++.h>
 
-#define USE_REMOTE false
+#define USE_REMOTE true
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -15,7 +13,7 @@ int main()
   server.serve(50051);
   server.wait();
 #else
-  SerialServer server; 
+  SerialServer server;
   server.list_devices();
 #endif
 

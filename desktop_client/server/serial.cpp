@@ -28,7 +28,7 @@ void SerialServer::list_devices()
     {
         CFTypeRef vendorIDRef = IORegistryEntryCreateCFProperty(device, CFSTR(kUSBVendorID), kCFAllocatorDefault, 0);
         CFTypeRef productIDRef = IORegistryEntryCreateCFProperty(device, CFSTR(kUSBProductID), kCFAllocatorDefault, 0);
-        CFTypeRef productNameRef = IORegistryEntryCreateCFProperty(device, CFSTR("USB Product Name"), kCFAllocatorDefault, 0);
+        CFTypeRef productNameRef = IORegistryEntryCreateCFProperty(device, CFSTR(kUSBProductString), kCFAllocatorDefault, 0);
 
         if (vendorIDRef && productIDRef)
         {
